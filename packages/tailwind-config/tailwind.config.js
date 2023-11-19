@@ -7,6 +7,9 @@ module.exports = {
     `./components/**/*.{js,ts,jsx,tsx}`,
     // packages content
     '../../packages/**/*.{js,ts,jsx,tsx}',
+    // vite root content
+    "./index.html",
+    "src/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
     extend: {},
