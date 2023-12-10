@@ -1,17 +1,31 @@
 
+interface PropTypes {
+    name: string;
+    ingredients: string;
+    photoName: string;
+    price: number;
+    soldOut?: boolean;
+    index: number;
+}
+import {pizzaData} from './assets/data'
+import focaccia from './assets/pizzas/focaccia.jpg';
+import funghi from './assets/pizzas/funghi.jpg';
+import margherita from './assets/pizzas/margherita.jpg';
+import prosciutto from './assets/pizzas/prosciutto.jpg';
+import salamino from './assets/pizzas/salamino.jpg';
+import spinaci from './assets/pizzas/spinaci.jpg';
+
+
+const images = [ focaccia, funghi, margherita, prosciutto, salamino, spinaci]
+
+
+const imageUrl = (path: string) => `./assets/${path}`
+
 export default function App(){
     return (
         <div className="container">
             <Header />
             <Menu />
-            <div>
-                <Pizza 
-                    name="Focaccia" 
-                    ingredients="Bread with italian olive oil and rosemary" 
-                    photoName="focaccia" 
-                    price="10"
-                />
-            </div>
             <Footer />
         </div>
     );
@@ -30,6 +44,16 @@ const Menu = () => {
     return(
         <main className="menu">
             <h2>Mama's Menu</h2>
+            {
+                pizzaData.length > 0 ?
+                <ul className='pizzas'>
+                    { pizzaData.map((pizza, index) => ( <Pizza {...pizza} index={index} key={pizza.name}/>)) }
+                </ul>
+                : <p>Sorry, we are sold out!</p>
+            }
+            <ul className='pizzas'>
+                { pizzaData.map((pizza, index) => ( <Pizza {...pizza} index={index} key={pizza.name}/>))}
+            </ul>
         </main>
     )
 }
@@ -39,37 +63,40 @@ const Footer = () => {
     const isClosed = hour < 12 || hour > 23;
     const isOpen = !isClosed;
     console.log(isOpen);
-    
+    const closeHour = 22
 
     return(
         <footer className="footer">
-            <p>{ new Date().toLocaleTimeString()} We are open</p>
+            { 
+            isOpen ? 
+                <OrderNow closeHour={closeHour} />
+                : <p>Sorry we are closed for today and will open from 12 till 10 pm.</p>
+            }
+            
         </footer>
     )}
 
-interface PropTypes {
-    name: string;
-    ingredients: string;
-    photoName: string;
-    price: string;
 
-}
-
-
-const imageUrl = (imageName: string) => {
-    return new URL(`../pizzas/${imageName}.jpg`, import.meta.url).href;
-}
-const Pizza = (props: PropTypes) => {
-
-
-     console.log(imageUrl(props.photoName));
-     
-    return (
-        <div className="pizza">
-            <img src={imageUrl(props.photoName)} alt="Focaccia" />
-            <h3>{ props.name }</h3>
-            <p>{props.ingredients}</p>
-            <p>{props.price}</p>
+const OrderNow = (props: any) => {  
+    return(
+        <div className="order">
+            <p>We are open until { props.closeHour }:00. Come visit us or order online.</p>
+            <button className="btn">Order Now</button>
         </div>
+    )
+}
+
+const Pizza = (props: PropTypes) => {
+    console.log(imageUrl(props.photoName));
+    
+    return (
+        <li className="pizza">
+            <img src={images[props.index]} alt={props.name} />
+            <div>
+                <h3>{ props.name }</h3>
+                <p>{props.ingredients}</p>
+                <span>{props.price}</span>
+            </div>
+        </li>
     )
 }
